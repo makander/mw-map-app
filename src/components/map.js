@@ -6,10 +6,10 @@ const token = process.env.REACT_APP_TOKEN;
 const owToken = process.env.REACT_APP_OW_TOKEN;
 //const cors = process.env.REACT_APP_CORS;
 
-const Map = props => {
+const Map = ({ setWikidata, wikidata, setWeather }) => {
   const [viewport, setViewport] = useState({
-    width: 600,
-    height: 600,
+    width: "70vw",
+    height: "70vh",
     latitude: 59.3293,
     longitude: 18.0686,
     zoom: 8
@@ -33,7 +33,7 @@ const Map = props => {
         ])
         .then(
           axios.spread((name, country) => {
-            props.setWikidata([
+            setWikidata([
               {
                 extract: name.data.extract,
                 displayTitle: name.data.displaytitle,
@@ -43,7 +43,7 @@ const Map = props => {
           })
         );
     }
-  }, [location]);
+  }, [location, setWikidata]);
 
   const handleClick = async e => {
     e.preventDefault();
@@ -51,15 +51,23 @@ const Map = props => {
     axios
       .all([
         axios.get(
-          `https://api.openweathermap.org/data/2.5/forecast?lat=${viewport.latitude}&lon=${viewport.longitude}&appid=${owToken}`
+          `https://api.openweathermap.org/data/2.5/forecast?lat=${viewport.latitude}&lon=${viewport.longitude}&appid=${owToken}&units=metric`
+        ),
+        axios.get(
+          `https://api.openweathermap.org/data/2.5/weather?lat=${viewport.latitude}&lon=${viewport.longitude}&appid=${owToken}&units=metric`
         ),
         axios.get(
           `https://api.mapbox.com/geocoding/v5/mapbox.places/${viewport.longitude},${viewport.latitude}.json?access_token=${token}&types=country,place`
         )
       ])
       .then(
-        axios.spread((weather, res) => {
-          props.setDailyWeather({ weather });
+        axios.spread((weeklyForecast, dailyForecast, res) => {
+          setWeather([
+            {
+              weeklyForecast: weeklyForecast.data.list,
+              dailyForecast: dailyForecast.data.weather[0]
+            }
+          ]);
           setLocation({
             name: res.data.features[0].text,
             country: res.data.features[1].text

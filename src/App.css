@@ -2,18 +2,11 @@
   height: 40vmin;
 }
 
-.App {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px black solid;
-}
-
-.mapboxgl-map {
+/* .mapboxgl-map {
+  padding-top: 10vh;
   position: absolute;
   border: 1px black solid;
-}
+} 
 
 .mapboxgl-canvas {
   left: 0;
