@@ -6,10 +6,10 @@ const token = process.env.REACT_APP_TOKEN;
 const owToken = process.env.REACT_APP_OW_TOKEN;
 //const cors = process.env.REACT_APP_CORS;
 
-const Map = () => {
+const Map = props => {
   const [viewport, setViewport] = useState({
-    width: 400,
-    height: 400,
+    width: 600,
+    height: 600,
     latitude: 59.3293,
     longitude: 18.0686,
     zoom: 8
@@ -20,24 +20,6 @@ const Map = () => {
     name: null
   });
 
-  const [wikidata, setWikidata] = useState([
-    {
-      extract: null,
-      displayTitle: null,
-      image: null
-    }
-  ]);
-
-  const DisplayInfo = () => {
-    console.log("this is wikidata", wikidata);
-    return Object.values(wikidata).map(() => {
-      {
-        console.log(wikidata.displayTitle);
-      }
-    });
-  };
-
-  const [dailyWeather, setDailyWeather] = useState({});
   useEffect(() => {
     if (location.country !== null) {
       axios
@@ -51,7 +33,7 @@ const Map = () => {
         ])
         .then(
           axios.spread((name, country) => {
-            setWikidata([
+            props.setWikidata([
               {
                 extract: name.data.extract,
                 displayTitle: name.data.displaytitle,
@@ -65,7 +47,6 @@ const Map = () => {
 
   const handleClick = async e => {
     e.preventDefault();
-    console.log(e);
 
     axios
       .all([
@@ -78,8 +59,7 @@ const Map = () => {
       ])
       .then(
         axios.spread((weather, res) => {
-          console.log("weather", weather);
-          setDailyWeather({ weather });
+          props.setDailyWeather({ weather });
           setLocation({
             name: res.data.features[0].text,
             country: res.data.features[1].text
@@ -91,6 +71,7 @@ const Map = () => {
   return (
     <div>
       <MapGL
+        props
         {...viewport}
         mapboxApiAccessToken={token}
         mapStyle={"mapbox://styles/mapbox/navigation-guidance-day-v4"}
@@ -98,21 +79,6 @@ const Map = () => {
         onClick={e => {
           handleClick(e);
         }}></MapGL>
-      <div className='mapinfo'>
-        {wikidata.length ? (
-          wikidata.map(item => {
-            return (
-              <div>
-                <img src={item.image} />
-                <h1>{item.displayTitle}</h1>
-                <p>{item.extract}</p>
-              </div>
-            );
-          })
-        ) : (
-          <div>wikidata is null</div>
-        )}
-      </div>
     </div>
   );
 };
