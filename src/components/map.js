@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import MapGL from "react-map-gl";
-import "mapbox-gl/dist/mapbox-gl.css";
 import axios from "axios";
 
 const token = process.env.REACT_APP_TOKEN;
@@ -21,11 +20,22 @@ const Map = () => {
     name: null
   });
 
-  const [wikidata, setWikidata] = useState({
-    extract: {},
-    displayTitle: {},
-    image: null
-  });
+  const [wikidata, setWikidata] = useState([
+    {
+      extract: null,
+      displayTitle: null,
+      image: null
+    }
+  ]);
+
+  const DisplayInfo = () => {
+    console.log("this is wikidata", wikidata);
+    return Object.values(wikidata).map(() => {
+      {
+        console.log(wikidata.displayTitle);
+      }
+    });
+  };
 
   const [dailyWeather, setDailyWeather] = useState({});
   useEffect(() => {
@@ -41,11 +51,13 @@ const Map = () => {
         ])
         .then(
           axios.spread((name, country) => {
-            setWikidata({
-              extract: name.data.extract,
-              displayTitle: name.data.displaytitle,
-              image: country.data.thumbnail.source
-            });
+            setWikidata([
+              {
+                extract: name.data.extract,
+                displayTitle: name.data.displaytitle,
+                image: country.data.thumbnail.source
+              }
+            ]);
           })
         );
     }
@@ -77,13 +89,31 @@ const Map = () => {
   };
 
   return (
-    <MapGL
-      {...viewport}
-      mapboxApiAccessToken={token}
-      onViewportChange={viewport => setViewport({ ...viewport })}
-      onClick={e => {
-        handleClick(e);
-      }}></MapGL>
+    <div>
+      <MapGL
+        {...viewport}
+        mapboxApiAccessToken={token}
+        mapStyle={"mapbox://styles/mapbox/navigation-guidance-day-v4"}
+        onViewportChange={viewport => setViewport({ ...viewport })}
+        onClick={e => {
+          handleClick(e);
+        }}></MapGL>
+      <div className='mapinfo'>
+        {wikidata.length ? (
+          wikidata.map(item => {
+            return (
+              <div>
+                <img src={item.image} />
+                <h1>{item.displayTitle}</h1>
+                <p>{item.extract}</p>
+              </div>
+            );
+          })
+        ) : (
+          <div>wikidata is null</div>
+        )}
+      </div>
+    </div>
   );
 };
 

@@ -1,22 +1,30 @@
-.App {
-  text-align: center;
-}
-
 .App-logo {
   height: 40vmin;
 }
 
-.App-header {
-  background-color: #282c34;
+.App {
   min-height: 100vh;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  border: 1px black solid;
+}
+
+.mapboxgl-map {
+  position: absolute;
+  border: 1px black solid;
+}
+
+.mapboxgl-canvas {
+  left: 0;
 }
 
 .App-link {
   color: #09d3ac;
+}
+
+.info {
+  height: 300;
+  width: 300;
+  border: 1px black solid;
 }
