@@ -7,10 +7,12 @@ const owToken = process.env.REACT_APP_OW_TOKEN;
 //const cors = process.env.REACT_APP_CORS;
 
 const Map = ({
-  weather,
+  setweeklyWeather,
+  setDailyWeather,
   setWikidata,
   wikidata,
-  setWeather,
+  dailyWeather,
+  weeklyWeather,
   error,
   setError
 }) => {
@@ -71,12 +73,9 @@ const Map = ({
       ])
       .then(
         axios.spread((weeklyForecast, dailyForecast, res) => {
-          setWeather([
-            {
-              weeklyForecast: weeklyForecast.data.list,
-              dailyForecast: dailyForecast.data.weather[0]
-            }
-          ]);
+          console.log(weeklyForecast, dailyForecast);
+          setDailyWeather([dailyForecast.data.weather[0]]);
+          setweeklyWeather(weeklyForecast.data.list);
           setLocation({
             name: dailyForecast.data.name,
             country: res.data.features[0].text

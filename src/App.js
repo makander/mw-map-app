@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import Map from "./components/map";
 import Info from "./components/info";
+import WeeklyWeather from "./components/weeklyWeather";
 import "./App.css";
 
 function App() {
-  const [weather, setWeather] = useState([]);
+  const [weeklyWeather, setweeklyWeather] = useState([]);
+  const [dailyWeather, setDailyWeather] = useState([]);
   const [wikidata, setWikidata] = useState([]);
 
   const [error, setError] = useState(null);
@@ -17,17 +19,23 @@ function App() {
       <Map
         setWikidata={setWikidata}
         wikidata={wikidata}
-        setWeather={setWeather}
+        dailyWeather={dailyWeather}
+        weeklyWeather={weeklyWeather}
+        setweeklyWeather={setweeklyWeather}
+        setDailyWeather={setDailyWeather}
         error={error}
         setError={setError}
       />{" "}
       <Info
         wikidata={wikidata}
-        weather={weather}
+        dailyWeather={dailyWeather}
         error={error}
         setError={setError}
         setWikidata={setWikidata}
       />
+      <div className='row'>
+        <WeeklyWeather weeklyWeather={weeklyWeather} />
+      </div>
     </div>
   );
 }

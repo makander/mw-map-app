@@ -1,6 +1,9 @@
 import React from "react";
 
-const InfoPage = ({ setError, setWikidata, wikidata, error, weather }) => {
+const InfoPage = ({ setError, setWikidata, wikidata, error, dailyWeather }) => {
+  {
+    console.log(dailyWeather);
+  }
   return (
     <div className='ui items'>
       {!wikidata[0]
@@ -15,10 +18,10 @@ const InfoPage = ({ setError, setWikidata, wikidata, error, weather }) => {
                   <div className='header huge'>{item.displayTitle}</div>
                   <div className='description'>{item.extract}</div>
                   <br />
-                  {weather.map(item => {
+                  {dailyWeather.map(item => {
                     return (
                       <div className='header'>
-                        Current weather: {item.dailyForecast.description}{" "}
+                        Current weather: {item.description}{" "}
                       </div>
                     );
                   })}
@@ -31,7 +34,6 @@ const InfoPage = ({ setError, setWikidata, wikidata, error, weather }) => {
               </div>
             );
           })}
-      {console.log(error)}
       {error ? (
         <div className='item'>
           <div className='content'>
