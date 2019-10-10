@@ -6,7 +6,14 @@ const token = process.env.REACT_APP_TOKEN;
 const owToken = process.env.REACT_APP_OW_TOKEN;
 //const cors = process.env.REACT_APP_CORS;
 
-const Map = ({ setWikidata, wikidata, setWeather }) => {
+const Map = ({
+  weather,
+  setWikidata,
+  wikidata,
+  setWeather,
+  error,
+  setError
+}) => {
   const [viewport, setViewport] = useState({
     width: "70vw",
     height: "70vh",
@@ -15,13 +22,10 @@ const Map = ({ setWikidata, wikidata, setWeather }) => {
     zoom: 8
   });
 
-  const [location, setLocation] = useState({
-    country: null,
-    name: null
-  });
+  const [location, setLocation] = useState(null);
 
   useEffect(() => {
-    if (location.country !== null) {
+    if (location !== null) {
       axios
         .all([
           axios.get(
@@ -40,10 +44,15 @@ const Map = ({ setWikidata, wikidata, setWeather }) => {
                 image: country.data.thumbnail.source
               }
             ]);
+            setError();
           })
-        );
+        )
+        .catch(error => {
+          setError(error);
+          setWikidata([]);
+        });
     }
-  }, [location, setWikidata]);
+  }, [location, setWikidata, setError, setLocation]);
 
   const handleClick = async e => {
     e.preventDefault();
@@ -57,7 +66,7 @@ const Map = ({ setWikidata, wikidata, setWeather }) => {
           `https://api.openweathermap.org/data/2.5/weather?lat=${viewport.latitude}&lon=${viewport.longitude}&appid=${owToken}&units=metric`
         ),
         axios.get(
-          `https://api.mapbox.com/geocoding/v5/mapbox.places/${viewport.longitude},${viewport.latitude}.json?access_token=${token}&types=country,place`
+          `https://api.mapbox.com/geocoding/v5/mapbox.places/${viewport.longitude},${viewport.latitude}.json?access_token=${token}&types=country`
         )
       ])
       .then(
@@ -69,11 +78,16 @@ const Map = ({ setWikidata, wikidata, setWeather }) => {
             }
           ]);
           setLocation({
-            name: res.data.features[0].text,
-            country: res.data.features[1].text
+            name: dailyForecast.data.name,
+            country: res.data.features[0].text
           });
         })
-      );
+      )
+      .catch(error => {
+        console.log("HANDLE CLICK___ wikidata", wikidata, "location", location);
+        setError(error);
+        setWikidata([]);
+      });
   };
 
   return (

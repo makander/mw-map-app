@@ -5,13 +5,9 @@ import "./App.css";
 
 function App() {
   const [weather, setWeather] = useState([]);
-  const [wikidata, setWikidata] = useState([
-    {
-      extract: null,
-      displayTitle: null,
-      image: null
-    }
-  ]);
+  const [wikidata, setWikidata] = useState([]);
+
+  const [error, setError] = useState(null);
 
   return (
     <div className='ui container grid centered'>
@@ -22,8 +18,16 @@ function App() {
         setWikidata={setWikidata}
         wikidata={wikidata}
         setWeather={setWeather}
+        error={error}
+        setError={setError}
       />{" "}
-      <Info wikidata={wikidata} weather={weather} />
+      <Info
+        wikidata={wikidata}
+        weather={weather}
+        error={error}
+        setError={setError}
+        setWikidata={setWikidata}
+      />
     </div>
   );
 }

@@ -1,12 +1,11 @@
 import React from "react";
 
-const InfoPage = props => {
+const InfoPage = ({ setError, setWikidata, wikidata, error, weather }) => {
   return (
     <div className='ui items'>
-      {console.log(props.weather)}
-      {props.wikidata[0].extract === null
+      {!wikidata[0]
         ? null
-        : props.wikidata.map(item => {
+        : wikidata.map(item => {
             return (
               <div className='item'>
                 <div className='image'>
@@ -16,7 +15,7 @@ const InfoPage = props => {
                   <div className='header huge'>{item.displayTitle}</div>
                   <div className='description'>{item.extract}</div>
                   <br />
-                  {props.weather.map(item => {
+                  {weather.map(item => {
                     return (
                       <div className='header'>
                         Current weather: {item.dailyForecast.description}{" "}
@@ -32,6 +31,16 @@ const InfoPage = props => {
               </div>
             );
           })}
+      {console.log(error)}
+      {error ? (
+        <div className='item'>
+          <div className='content'>
+            <div className='header huge'>
+              An error occurred, please try another location.{" "}
+            </div>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 };
